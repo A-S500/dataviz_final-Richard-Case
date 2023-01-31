@@ -1,9 +1,28 @@
 ---
-title: "Visualization Final Report"
-author: "Me!"
+title: "NAME TBD"
+author: "Ricky Case"
+date: 2023-01-31
 format: 
   html: 
     theme: cosmo
 ---
 
-## 
+## Instructions
+
+<p><b>What you should do:</b></p>
+- Follow best practices as you’ve learned in the class to produce and fine tune a data visualization.
+
+<p><b>What you should tell me:</b> <i>Some things which should be included, but not a checklist...</i></p>
+
+- What data you’re plotting, and what its source is.
+
+- Are there any sources of inspiration you’re pulling from?
+
+- Do you have a sketch of what you’d *like* the plot to look like?
+
+- What *decisions* did you make in creating the plot (e.g. labels,
+  colors, geometries, plot orientation, etc.)
+
+- Why did you make those decisions?
+
+- Does the final plot fall short of your ultimate vision in any way?
