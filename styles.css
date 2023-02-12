@@ -1,0 +1,24 @@
+/* css styles */
+li.nav-item
+{
+	padding: 0.01em;
+}
+a.nav-link
+{
+	padding: 0.01em;
+}
+span.menu-text
+{
+	padding: 0.01em;
+	color: rgb(255, 255, 255);
+}
+
+#description
+{
+	text-shadow: 0.5px 0.5px rgb(255, 0, 0);
+}
+
+.tab
+{
+	padding-left: 1em;
+}

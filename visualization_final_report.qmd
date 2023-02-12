@@ -1,28 +1,212 @@
 ---
-title: "NAME TBD"
+title: "Bake Off Data!"
 author: "Ricky Case"
-date: 2023-01-31
+date: 2023-02-12
 format: 
   html: 
     theme: cosmo
 ---
 
-## Instructions
+## Introduction
+<p>In this data visualization project, I will be using a attempting to determine whether there is a correlation between a contestant's ability to win Technical Challenges and their likelihood of winning the series.</p>
 
-<p><b>What you should do:</b></p>
-- Follow best practices as you’ve learned in the class to produce and fine tune a data visualization.
+<p>This data was retrieved from the GitHub repository <a href="https://github.com/apreshill/bakeoff/tree/00fdf4dd339b69a60b1d7c9fa7e5850971e04463">Bakeoff</a>.</p>
 
-<p><b>What you should tell me:</b> <i>Some things which should be included, but not a checklist...</i></p>
+## Libraries Included
+```{r}
+library(tidyverse)
+library(bakeoff)
+library(scales)
+library(ggthemes)
+library(ggdark)
+library(showtext)
+library(gridExtra)
+```
 
-- What data you’re plotting, and what its source is.
+## The Initial Dataset: {bakers}
+```{r}
+bakers
+```
 
-- Are there any sources of inspiration you’re pulling from?
+## Preparing The Data
+<p>I began by playing around with the data, seeing what parsed out sub-sets might be best-suited to my examination.<br>
+There are what I ended up deciding to go with.</p>
 
-- Do you have a sketch of what you’d *like* the plot to look like?
+## The Useful Data
+<i>This Dataset is a narrowed-down version of the original, listing only relevant data.</i>
 
-- What *decisions* did you make in creating the plot (e.g. labels,
-  colors, geometries, plot orientation, etc.)
+```{r}
+bakers |>
+	select(series, baker, series_winner, technical_winner) ->
+	bakerData
 
-- Why did you make those decisions?
+bakerData
+```
 
-- Does the final plot fall short of your ultimate vision in any way?
+## The Top Performers
+<i>From there, I created a new Data Sub-Set in order to further categorize the relevant data.</i>
+
+```{r}
+bakerData |>
+	filter(technical_winner >= 3) ->
+	topPerformers
+
+topPerformers
+```
+
+## Making The Graph
+<p>Initially I wasn't sure which type of graph would be illustrate the data, though I eventually settled on a bar graph.</p>
+
+```{r}
+ggplot(
+	topPerformers,
+	aes(baker, technical_winner)) + 
+geom_col()
+```
+
+### Side-By-Side
+<p>I then attempted using the ggplot2 facet_wrap() function to create a side-by side look at top performers, comparing those who won with those who lost.</p>
+
+```{r}
+ggplot(
+	topPerformers,
+	aes(baker, technical_winner)) + 
+geom_col() +
+facet_wrap(~series_winner)
+```
+
+<p>Unhappy with the gaps created by the inclusion of ever baker on both parts, I becided to find a way to display two separate graphs side-by-side.<br>
+</p>
+
+```{r}
+topPerformers |>
+	filter(series_winner == 0) ->
+	topPerformersWhoLost
+
+topPerformers |>
+	filter(series_winner == 1) ->
+	topPerformersWhoWon
+
+grid.arrange(
+	ggplot(
+		topPerformersWhoLost,
+		aes(baker, technical_winner)) +
+	geom_col(),
+	
+	ggplot(
+		topPerformersWhoWon,
+		aes(baker, technical_winner)) +
+	geom_col(),
+	
+	ncol = 2
+)
+```
+<p>Clearly, this is better but it's also difficult to understand. Specifically, how is anyone to understand what's different between the two lists of bakers? Now it was time to edit the label text to fix this.</p>
+
+### Editing the labeling
+```{r}
+grid.arrange(
+	ggplot(
+		topPerformersWhoLost,
+		aes(baker, technical_winner)) +
+	geom_col() +
+	xlab("Losers") +
+	ylab("Technical Wins"),
+	
+	ggplot(
+		topPerformersWhoWon,
+		aes(baker, technical_winner)) +
+	geom_col() +
+	xlab("Winners") +
+	ylab(""),
+	
+	ncol = 2
+)
+```
+
+<p>Now, with the label text sorted out, I needed to make it stand out a bit more.</p>
+
+```{r}
+grid.arrange(
+	ggplot(
+		topPerformersWhoLost,
+		aes(baker, technical_winner)) +
+	geom_col() +
+	xlab("Losers") +
+	ylab("Technical Wins") +
+	theme(axis.title = element_text(size = 16, family = "Arial")),
+	
+	ggplot(
+		topPerformersWhoWon,
+		aes(baker, technical_winner)) +
+	geom_col() +
+	xlab("Winners") +
+	ylab("") +
+	theme(axis.title = element_text(size = 16, family = "Arial")),
+	
+	ncol = 2
+)
+```
+
+<p>At this point, it became apparent that the current scales of these graphs were a bit misleading.With the graph on the right having a y-axis sxale ending with a value of 4, 4 wins on this graph appeared equivilent to the value of 5 wins on the left graph.<br>
+This needed to be fixed...</p>
+
+```{r}
+grid.arrange(
+	ggplot(
+		topPerformersWhoLost,
+		aes(baker, technical_winner)) +
+	geom_col() +
+	xlab("Losers") +
+	ylab("Technical Wins") +
+	theme(axis.title = element_text(size = 16, family = "Arial")),
+	
+	ggplot(
+		topPerformersWhoWon,
+		aes(baker, technical_winner)) +
+	geom_col() +
+	xlab("Winners") +
+	ylab("") +
+	theme(axis.title = element_text(size = 16, family = "Arial")) +
+	scale_y_continuous(limits = c(0, 5)),
+	
+	ncol = 2
+)
+```
+
+<p>Finally, with my data arranged correctly on these two graphs, it was time to make it all a bit prettier to look at.</p>
+<p>I decided to go with a white background and blue columns, becasue it's simple and easy to read.</p>
+
+```{r}
+grid.arrange(
+	ggplot(
+		topPerformersWhoLost,
+		aes(baker, technical_winner)) +
+	geom_col(width = 0.9, fill = "blue") +
+	xlab("Losers") +
+	ylab("Technical Wins") +
+	theme(
+		axis.title = element_text(size = 16, family = "Arial"),
+		plot.background = element_rect(fill = "white"),
+		panel.background = element_rect(fill = "white")
+	),
+	
+	ggplot(
+		topPerformersWhoWon,
+		aes(baker, technical_winner)) +
+	geom_col(width = 0.9, fill = "blue") +
+	xlab("Winners") +
+	ylab("") +
+	theme(
+		axis.title = element_text(size = 16, family = "Arial"),
+		plot.background = element_rect(fill = "white"),
+		panel.background = element_rect(fill = "white")
+	) +
+	scale_y_continuous(limits = c(0, 5)),
+	
+	ncol = 2
+)
+```
+
+<p>Interestingly, I expected to be able to draw some kind of correlation between technical wins and a baker's liklihood of winning the series. However, this data appears to show that no correlation exists at all! Not that I think that's necessarily important. Though I do find it very interesting!</p>
+<p>Perhaps the takeaway is that the technicals aren't actually very important? For someone with the time and interest, this might be an interesting question to try and answer.</p>

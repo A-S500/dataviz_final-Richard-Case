@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "visualization_final_report.html",
+    "href": "visualization_final_report.html",
+    "title": "Bake Off Data!",
+    "section": "",
+    "text": "In this data visualization project, I will be using a attempting to determine whether there is a correlation between a contestant’s ability to win Technical Challenges and their likelihood of winning the series.\n\n\nThis data was retrieved from the GitHub repository Bakeoff."
+  },
+  {
+    "objectID": "visualization_final_report.html#libraries-included",
+    "href": "visualization_final_report.html#libraries-included",
+    "title": "Bake Off Data!",
+    "section": "Libraries Included",
+    "text": "Libraries Included\n\nlibrary(tidyverse)\n\n── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──\n✔ ggplot2 3.3.6     ✔ purrr   1.0.1\n✔ tibble  3.1.7     ✔ dplyr   1.1.0\n✔ tidyr   1.3.0     ✔ stringr 1.5.0\n✔ readr   2.1.4     ✔ forcats 1.0.0\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\n\nlibrary(bakeoff)\nlibrary(scales)\n\n\nAttaching package: 'scales'\n\nThe following object is masked from 'package:purrr':\n\n    discard\n\nThe following object is masked from 'package:readr':\n\n    col_factor\n\nlibrary(ggthemes)\nlibrary(ggdark)\nlibrary(showtext)\n\nLoading required package: sysfonts\nLoading required package: showtextdb\n\nlibrary(gridExtra)\n\n\nAttaching package: 'gridExtra'\n\nThe following object is masked from 'package:dplyr':\n\n    combine"
+  },
+  {
+    "objectID": "visualization_final_report.html#the-initial-dataset-bakers",
+    "href": "visualization_final_report.html#the-initial-dataset-bakers",
+    "title": "Bake Off Data!",
+    "section": "The Initial Dataset: {bakers}",
+    "text": "The Initial Dataset: {bakers}\n\nbakers\n\n# A tibble: 120 × 24\n   series baker     star_baker technical_winner technical_top3 technical_bottom\n    <dbl> <chr>          <int>            <int>          <int>            <int>\n 1      1 Annetha            0                0              1                1\n 2      1 David              0                0              1                3\n 3      1 Edd                0                2              4                1\n 4      1 Jasminder          0                0              2                2\n 5      1 Jonathan           0                1              1                2\n 6      1 Lea                0                0              0                1\n 7      1 Louise             0                0              0                1\n 8      1 Mark               0                0              0                0\n 9      1 Miranda            0                2              4                1\n10      1 Ruth               0                0              2                2\n# … with 110 more rows, and 18 more variables: technical_highest <dbl>,\n#   technical_lowest <dbl>, technical_median <dbl>, series_winner <int>,\n#   series_runner_up <int>, total_episodes_appeared <dbl>,\n#   first_date_appeared <date>, last_date_appeared <date>,\n#   first_date_us <date>, last_date_us <date>, percent_episodes_appeared <dbl>,\n#   percent_technical_top3 <dbl>, baker_full <chr>, age <dbl>,\n#   occupation <chr>, hometown <chr>, baker_last <chr>, baker_first <chr>"
+  },
+  {
+    "objectID": "visualization_final_report.html#preparing-the-data",
+    "href": "visualization_final_report.html#preparing-the-data",
+    "title": "Bake Off Data!",
+    "section": "Preparing The Data",
+    "text": "Preparing The Data\n\nI began by playing around with the data, seeing what parsed out sub-sets might be best-suited to my examination. There are what I ended up deciding to go with."
+  },
+  {
+    "objectID": "visualization_final_report.html#the-useful-data",
+    "href": "visualization_final_report.html#the-useful-data",
+    "title": "Bake Off Data!",
+    "section": "The Useful Data",
+    "text": "The Useful Data\nThis Dataset is a narrowed-down version of the original, listing only relevant data.\n\nbakers |>\n    select(series, baker, series_winner, technical_winner) ->\n    bakerData\n\nbakerData\n\n# A tibble: 120 × 4\n   series baker     series_winner technical_winner\n    <dbl> <chr>             <int>            <int>\n 1      1 Annetha               0                0\n 2      1 David                 0                0\n 3      1 Edd                   1                2\n 4      1 Jasminder             0                0\n 5      1 Jonathan              0                1\n 6      1 Lea                   0                0\n 7      1 Louise                0                0\n 8      1 Mark                  0                0\n 9      1 Miranda               0                2\n10      1 Ruth                  0                0\n# … with 110 more rows"
+  },
+  {
+    "objectID": "visualization_final_report.html#the-sub-sets",
+    "href": "visualization_final_report.html#the-sub-sets",
+    "title": "Bake Off!",
+    "section": "The Sub-Sets",
+    "text": "The Sub-Sets\nFrom there, I created four new Data Sub-Sets in order to further categorize the relevant data.\n\nSub-sets I decided were not useful\n\n# bakerData |>\n#   filter(series_winner == 1) ->\n#   winners\n\n# winners |>\n#   filter(technical_winner < 3) ->\n#   winnersWhoUnderPerformed\n\n# topPerformers |>\n#   filter(series_winner == 0) ->\n#   topPerformersWhoLost\n\n\n\nTop Performers\n\nbakerData |>\n    filter(technical_winner >= 3) ->\n    topPerformers\n\ntopPerformers\n\n# A tibble: 7 × 4\n  series baker     series_winner technical_winner\n   <dbl> <chr>             <int>            <int>\n1      2 Joanne                1                3\n2      3 James                 0                5\n3      4 Kimberley             0                3\n4      5 Nancy                 1                3\n5      6 Nadiya                1                4\n6      8 Steven                0                3\n7      9 Ruby                  0                3"
+  },
+  {
+    "objectID": "visualization_final_report.html#instructions",
+    "href": "visualization_final_report.html#instructions",
+    "title": "Bake Off!",
+    "section": "Instructions",
+    "text": "Instructions\n\nWhat you should do:\n\n\nFollow best practices as you’ve learned in the class to produce and fine tune a data visualization.\n\n\nWhat you should tell me: Some things which should be included, but not a checklist…\n\n\nWhat data you’re plotting, and what its source is.\nAre there any sources of inspiration you’re pulling from?\nDo you have a sketch of what you’d like the plot to look like?\nWhat decisions did you make in creating the plot (e.g. labels, colors, geometries, plot orientation, etc.)\nWhy did you make those decisions?\nDoes the final plot fall short of your ultimate vision in any way?\n\n\nggplot(\n    winners,\n    aes(baker, percent_technical_top3)) + \ngeom_col()\n\n\n\nggplot(\n    topPerformersWhoLost,\n    aes(baker, percent_technical_top3)) + \ngeom_col()\n\n\n\nggplot(\n    winnersWhoUnderPerformed,\n    aes(baker, percent_technical_top3)) + \ngeom_col()\n\n\n\nggplot(\n    topPerformers,\n    aes(baker, percent_technical_top3)) + \ngeom_col() +\nfacet_wrap(~series_winner)"
+  },
+  {
+    "objectID": "Instructions.html",
+    "href": "Instructions.html",
+    "title": "Instructions",
+    "section": "",
+    "text": "For this assignment, I want you to plot something. You can use data of your own, some sample data we’ve worked with, or interesting data that’s freely available online. Some sources to explore for interesting datasets might be:\nFiveThirtyEight also has a number of datasets available that they used for their stories. You can browse a list here: https://data.fivethirtyeight.com/. Most link to a github repository if you click on info."
+  },
+  {
+    "objectID": "Instructions.html#when-you-should-get-started",
+    "href": "Instructions.html#when-you-should-get-started",
+    "title": "Instructions",
+    "section": "When you should get started:",
+    "text": "When you should get started:\nASAP. There is one office hours session between now and when the project is due. That session + email correspondences is the time we have to work out any issues together. I cannot promise to be able to respond on an emergency time frame the day or evening before this is due."
+  },
+  {
+    "objectID": "Instructions.html#what-you-should-do",
+    "href": "Instructions.html#what-you-should-do",
+    "title": "Instructions",
+    "section": "What you should do:",
+    "text": "What you should do:\nFollow best practices as you’ve learned in the class to produce and fine tune a data visualization."
+  },
+  {
+    "objectID": "Instructions.html#what-you-should-tell-me",
+    "href": "Instructions.html#what-you-should-tell-me",
+    "title": "Instructions",
+    "section": "What you should tell me:",
+    "text": "What you should tell me:\nHere are some kinds of things you should tell me about your process (this isn’t a checklist):\n\nWhat data you’re plotting, and what its source is.\nAre there any sources of inspiration you’re pulling from?\nDo you have a sketch of what you’d like the plot to look like?\nWhat decisions did you make in creating the plot (e.g. labels, colors, geometries, plot orientation, etc.)\nWhy did you make those decisions?\nDoes the final plot fall short of your ultimate vision in any way?"
+  },
+  {
+    "objectID": "Instructions.html#how-to-use-github",
+    "href": "Instructions.html#how-to-use-github",
+    "title": "Instructions",
+    "section": "How to use github",
+    "text": "How to use github\nI won’t grade anything until you’ve told me that the project is submitted through the canvas submission. Therefore, commit and push to Github regularly. The best way to ask for help will be to reference files and lines that are on github."
+  },
+  {
+    "objectID": "Instructions.html#what-to-submit",
+    "href": "Instructions.html#what-to-submit",
+    "title": "Instructions",
+    "section": "What to submit:",
+    "text": "What to submit:\nDraft your report and visualization code in vizualization_final_report.qmd. Once you’ve made your final commit and pushed it to github, submit a “Project submitted” message on canvas."
+  },
+  {
+    "objectID": "visualization_final_report.html#more-stuff",
+    "href": "visualization_final_report.html#more-stuff",
+    "title": "Bake Off!",
+    "section": "MORE STUFF",
+    "text": "MORE STUFF\n\nggplot(\n    winners,\n    aes(baker, percent_technical_top3)) + \ngeom_col()\n\n\n\nggplot(\n    topPerformersWhoLost,\n    aes(baker, percent_technical_top3)) + \ngeom_col()\n\n\n\nggplot(\n    winnersWhoUnderPerformed,\n    aes(baker, percent_technical_top3)) + \ngeom_col()\n\n\n\nggplot(\n    topPerformers,\n    aes(baker, percent_technical_top3)) + \ngeom_col() +\nfacet_wrap(~series_winner)"
+  },
+  {
+    "objectID": "visualization_final_report.html#making-the-graph",
+    "href": "visualization_final_report.html#making-the-graph",
+    "title": "Bake Off Data!",
+    "section": "Making The Graph",
+    "text": "Making The Graph\n\nInitially I wasn’t sure which type of graph would be illustrate the data, though I eventually settled on a bar graph.\n\n\nggplot(\n    topPerformers,\n    aes(baker, technical_winner)) + \ngeom_col()\n\n\n\n\n\nSide-By-Side\n\nI then attempted using the ggplot2 facet_wrap() function to create a side-by side look at top performers, comparing those who won with those who lost.\n\n\nggplot(\n    topPerformers,\n    aes(baker, technical_winner)) + \ngeom_col() +\nfacet_wrap(~series_winner)\n\n\n\n\n\nUnhappy with the gaps created by the inclusion of ever baker on both parts, I becided to find a way to display two separate graphs side-by-side.\n\n\ntopPerformers |>\n    filter(series_winner == 0) ->\n    topPerformersWhoLost\n\ntopPerformers |>\n    filter(series_winner == 1) ->\n    topPerformersWhoWon\n\ngrid.arrange(\n    ggplot(\n        topPerformersWhoLost,\n        aes(baker, technical_winner)) +\n    geom_col(),\n    \n    ggplot(\n        topPerformersWhoWon,\n        aes(baker, technical_winner)) +\n    geom_col(),\n    \n    ncol = 2\n)\n\n\n\n\n\nClearly, this is better but it’s also difficult to understand. Specifically, how is anyone to understand what’s different between the two lists of bakers? Now it was time to edit the label text to fix this.\n\n\n\nEditing the labeling\n\ngrid.arrange(\n    ggplot(\n        topPerformersWhoLost,\n        aes(baker, technical_winner)) +\n    geom_col() +\n    xlab(\"Losers\") +\n    ylab(\"Technical Wins\"),\n    \n    ggplot(\n        topPerformersWhoWon,\n        aes(baker, technical_winner)) +\n    geom_col() +\n    xlab(\"Winners\") +\n    ylab(\"\"),\n    \n    ncol = 2\n)\n\n\n\n\n\nNow, with the label text sorted out, I needed to make it stand out a bit more.\n\n\ngrid.arrange(\n    ggplot(\n        topPerformersWhoLost,\n        aes(baker, technical_winner)) +\n    geom_col() +\n    xlab(\"Losers\") +\n    ylab(\"Technical Wins\") +\n    theme(axis.title = element_text(size = 16, family = \"Arial\")),\n    \n    ggplot(\n        topPerformersWhoWon,\n        aes(baker, technical_winner)) +\n    geom_col() +\n    xlab(\"Winners\") +\n    ylab(\"\") +\n    theme(axis.title = element_text(size = 16, family = \"Arial\")),\n    \n    ncol = 2\n)\n\n\n\n\n\nAt this point, it became apparent that the current scales of these graphs were a bit misleading.With the graph on the right having a y-axis sxale ending with a value of 4, 4 wins on this graph appeared equivilent to the value of 5 wins on the left graph. This needed to be fixed…\n\n\ngrid.arrange(\n    ggplot(\n        topPerformersWhoLost,\n        aes(baker, technical_winner)) +\n    geom_col() +\n    xlab(\"Losers\") +\n    ylab(\"Technical Wins\") +\n    theme(axis.title = element_text(size = 16, family = \"Arial\")),\n    \n    ggplot(\n        topPerformersWhoWon,\n        aes(baker, technical_winner)) +\n    geom_col() +\n    xlab(\"Winners\") +\n    ylab(\"\") +\n    theme(axis.title = element_text(size = 16, family = \"Arial\")) +\n    scale_y_continuous(limits = c(0, 5)),\n    \n    ncol = 2\n)\n\n\n\n\n\nFinally, with my data arranged correctly on these two graphs, it was time to make it all a bit prettier to look at.\n\n\nI decided to go with a white background and blue columns, becasue it’s simple and easy to read.\n\n\ngrid.arrange(\n    ggplot(\n        topPerformersWhoLost,\n        aes(baker, technical_winner)) +\n    geom_col(width = 0.9, fill = \"blue\") +\n    xlab(\"Losers\") +\n    ylab(\"Technical Wins\") +\n    theme(\n        axis.title = element_text(size = 16, family = \"Arial\"),\n        plot.background = element_rect(fill = \"white\"),\n        panel.background = element_rect(fill = \"white\")\n    ),\n    \n    ggplot(\n        topPerformersWhoWon,\n        aes(baker, technical_winner)) +\n    geom_col(width = 0.9, fill = \"blue\") +\n    xlab(\"Winners\") +\n    ylab(\"\") +\n    theme(\n        axis.title = element_text(size = 16, family = \"Arial\"),\n        plot.background = element_rect(fill = \"white\"),\n        panel.background = element_rect(fill = \"white\")\n    ) +\n    scale_y_continuous(limits = c(0, 5)),\n    \n    ncol = 2\n)\n\n\n\n\n\nInterestingly, I expected to be able to draw some kind of correlation between technical wins and a baker’s liklihood of winning the series. However, this data appears to show that no correlation exists at all! Not that I think that’s necessarily important. Though I do find it very interesting!\n\n\nPerhaps the takeaway is that the technicals aren’t actually very important? For someone with the time and interest, this might be an interesting question to try and answer."
+  },
+  {
+    "objectID": "visualization_final_report.html#the-top-performers",
+    "href": "visualization_final_report.html#the-top-performers",
+    "title": "Bake Off Data!",
+    "section": "The Top Performers",
+    "text": "The Top Performers\nFrom there, I created a new Data Sub-Set in order to further categorize the relevant data.\n\nbakerData |>\n    filter(technical_winner >= 3) ->\n    topPerformers\n\ntopPerformers\n\n# A tibble: 7 × 4\n  series baker     series_winner technical_winner\n   <dbl> <chr>             <int>            <int>\n1      2 Joanne                1                3\n2      3 James                 0                5\n3      4 Kimberley             0                3\n4      5 Nancy                 1                3\n5      6 Nadiya                1                4\n6      8 Steven                0                3\n7      9 Ruby                  0                3"
+  }
+]

@@ -1,7 +1,17 @@
 project:
-  title: "visualization_final_report"
-  render: 
-    - "*qmd"
+  type: website
+
+website:
+  title: "LIN517 - Visualization Project"
+  navbar:
+    left:
+      - visualization_final_report.qmd
+      - Instructions.qmd
+
+format:
+  html:
+    theme: dark
+    css: styles.css
+    toc: true
 
 editor: visual
-
